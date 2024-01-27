@@ -1,33 +1,30 @@
 import { useState } from 'react';
-import { getAllTasks } from '../../data/tasks';
 import AddTaskModal from '../Modal/AddTaskModal';
+import {
+  useTasks,
+  useTasksDispatch,
+} from '../contextApi/useContexts';
 import ActionBar from './ActionBar';
 import TaskListTable from './TaskListTable';
 
-const initialTasks = getAllTasks();
 const TaskBoard = () => {
-  const [tasks, setTasks] = useState(initialTasks);
+  // const [tasks, dispatch] = useReducer(taskReducer, initialTasks);
   const [openModal, setOpenModal] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
-
   const [error, setError] = useState({
     title: '',
     description: '',
     tags: '',
     priority: '',
   });
+  const { data } = useTasks();
+  const dispatch = useTasksDispatch();
 
   const handleSaveTask = (newTask, isAdd) => {
     if (isAdd) {
-      setTasks([...tasks, newTask]);
-      handleCloseModal();
+      dispatch({ type: 'addTask', payload: newTask });
     } else {
-      const updatedTask = tasks.map((task) => {
-        if (task.id === newTask.id) {
-          return newTask;
-        } else return task;
-      });
-      setTasks(updatedTask);
+      dispatch({ type: 'saveTask', payload: newTask });
     }
     handleCloseModal();
   };
@@ -67,29 +64,15 @@ const TaskBoard = () => {
     setSelectedTask(task);
   };
   const handleDeleteTask = (taskId) => {
-    const newTasks = tasks.filter((task) => task.id !== taskId);
-    setTasks(newTasks);
+    dispatch({ type: 'deleteTask', payload: taskId });
   };
-  const handleSearch = (searchTerm) => {
-    const filtered = initialTasks.filter((task) =>
-      task.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
 
-    setTasks(filtered);
-  };
   const handleSetFavorite = (taskId) => {
-    setTasks(
-      tasks.map((task) => {
-        if (task.id === taskId) {
-          return { ...task, isFavorite: !task.isFavorite };
-        } else {
-          return task;
-        }
-      })
-    );
+    console.log(taskId);
+    dispatch({ type: 'toggleFav', payload: taskId });
   };
-  const noResultsMessage =
-    tasks.length === 0 ? 'No matching tasks found' : '';
+  // const noResultsMessage =
+  //   tasks.length === 0 ? 'No matching tasks found' : '';
 
   return (
     <section className="mb-20" id="tasks">
@@ -104,17 +87,14 @@ const TaskBoard = () => {
       )}
       <div className="container">
         <div className="rounded-xl border border-[rgba(206,206,206,0.12)] bg-[#1D212B] px-6 py-8 md:px-9 md:py-16">
-          <ActionBar
-            onOpenModal={() => setOpenModal(true)}
-            onSearch={handleSearch}
-          />
+          <ActionBar onOpenModal={() => setOpenModal(true)} />
 
           <TaskListTable
-            tasks={tasks}
+            tasks={data}
             onTaskEdit={handleEditTask}
             onDeleteTask={handleDeleteTask}
             onFav={handleSetFavorite}
-            searchMessage={noResultsMessage}
+            // searchMessage={noResultsMessage}
           />
         </div>
       </div>

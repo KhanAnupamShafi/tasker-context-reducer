@@ -1,18 +1,25 @@
-import { useState } from 'react';
+import { useTasksDispatch } from '../contextApi/useContexts';
 
-const SearchBar = ({ onSearch }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+const SearchBar = () => {
+  const dispatch = useTasksDispatch();
+  // let timeoutId;
+  // const handleChange = (e) => {
+  //   const newSearchTerm = e.target.value;
+  //   setSearchTerm(newSearchTerm);
 
-  let timeoutId;
-  const handleChange = (e) => {
+  //   clearTimeout(timeoutId);
+
+  //   timeoutId = setTimeout(() => {
+  //     onSearch(newSearchTerm);
+  //   }, 600);
+  // };
+
+  const handleSearch = (e) => {
     const newSearchTerm = e.target.value;
-    setSearchTerm(newSearchTerm);
-
-    clearTimeout(timeoutId);
-
-    timeoutId = setTimeout(() => {
-      onSearch(newSearchTerm);
-    }, 600);
+    dispatch({
+      type: 'searchTask',
+      payload: newSearchTerm,
+    });
   };
 
   return (
@@ -20,8 +27,7 @@ const SearchBar = ({ onSearch }) => {
       <div className="flex">
         <div className="relative overflow-hidden rounded-lg text-gray-50 md:min-w-[380px] lg:min-w-[440px]">
           <input
-            value={searchTerm}
-            onChange={handleChange}
+            onChange={handleSearch}
             type="search"
             id="search-dropdown"
             className="z-20 block w-full bg-gray-800 px-4 py-2 pr-10 focus:outline-none"
