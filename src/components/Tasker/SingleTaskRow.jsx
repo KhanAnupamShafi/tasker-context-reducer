@@ -1,14 +1,31 @@
+import { useState } from 'react';
 import Favourite from '../Icons/Favourite';
 import NotFavourite from '../Icons/NotFavourite';
+import AlertConfirmModal from '../Modal/AlertConfirmModal';
+import { useTasksDispatch } from '../contextApi/useContexts';
 
-const SingleTaskRow = ({
-  taskItem,
-  onTaskEdit,
-  onDeleteTask,
-  onFav,
-}) => {
+const SingleTaskRow = ({ taskItem, onTaskEdit }) => {
+  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const dispatch = useTasksDispatch();
+
   const tagColors = ['#00D991A1', '#1C92FFB0', '#FE1A1AB5'];
 
+  const handleDeleteTask = () => {
+    setDeleteModalOpen(true);
+
+    // dispatch({ type: 'deleteTask', payload: taskId });
+  };
+  const handleConfirmDelete = () => {
+    dispatch({ type: 'deleteTask', payload: taskItem.id });
+    setDeleteModalOpen(false);
+  };
+  const handleCancelDelete = () => {
+    setDeleteModalOpen(false);
+  };
+  const handleSetFavorite = (taskId) => {
+    dispatch({ type: 'toggleFav', payload: taskId });
+  };
   return (
     <tr
       key={taskItem.id}
@@ -16,7 +33,7 @@ const SingleTaskRow = ({
       <td>
         <div
           className="cursor-pointer"
-          onClick={() => onFav(taskItem.id)}>
+          onClick={() => handleSetFavorite(taskItem.id)}>
           {taskItem.isFavorite ? <Favourite /> : <NotFavourite />}
         </div>
       </td>
@@ -43,7 +60,7 @@ const SingleTaskRow = ({
         <div className="flex items-center justify-center space-x-3">
           <button
             className="text-red-500"
-            onClick={() => onDeleteTask(taskItem.id)}>
+            onClick={() => handleDeleteTask(taskItem.id)}>
             Delete
           </button>
           <button
@@ -53,6 +70,15 @@ const SingleTaskRow = ({
           </button>
         </div>
       </td>
+      {/* Delete Confirmation Modal */}
+      {isDeleteModalOpen && (
+        <AlertConfirmModal
+          title="Confirm Delete"
+          content={`Are you sure you want to delete the task?`}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
     </tr>
   );
 };
