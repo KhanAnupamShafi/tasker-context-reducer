@@ -1,5 +1,5 @@
 import { useContext } from 'react';
-import { TaskContext, TaskDispatchContext } from '.';
+import { ModalContext, TaskContext, TaskDispatchContext } from '.';
 
 const useTasks = () => {
   return useContext(TaskContext);
@@ -7,6 +7,9 @@ const useTasks = () => {
 
 const useTasksDispatch = () => {
   return useContext(TaskDispatchContext);
+};
+export const useModal = () => {
+  return useContext(ModalContext);
 };
 
 export { useTasks, useTasksDispatch };
