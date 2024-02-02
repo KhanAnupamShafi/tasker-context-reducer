@@ -1,7 +1,10 @@
-import { useTasksDispatch } from '../contextApi/useContexts';
-
+import { useTasksContext } from '../contextApi/contextHooks';
+/**
+ *
+ * TODO: debounce
+ */
 const SearchBar = () => {
-  const dispatch = useTasksDispatch();
+  const { setFilter } = useTasksContext();
   // let timeoutId;
   // const handleChange = (e) => {
   //   const newSearchTerm = e.target.value;
@@ -15,11 +18,7 @@ const SearchBar = () => {
   // };
 
   const handleSearch = (e) => {
-    const newSearchTerm = e.target.value;
-    dispatch({
-      type: 'searchTask',
-      payload: newSearchTerm,
-    });
+    setFilter(e.target.value);
   };
 
   return (

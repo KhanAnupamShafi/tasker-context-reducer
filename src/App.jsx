@@ -3,16 +3,16 @@ import Footer from './components/Footer';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import TaskBoard from './components/Tasker/TaskBoard';
-import TasksProvider from './components/contextApi';
+import ContextsProvider from './components/contextApi';
 
 function App() {
   return (
     <>
       <Header />
       <Hero />
-      <TasksProvider>
+      <ContextsProvider>
         <TaskBoard />
-      </TasksProvider>
+      </ContextsProvider>
       <Footer />
     </>
   );

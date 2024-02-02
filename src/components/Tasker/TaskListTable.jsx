@@ -1,7 +1,8 @@
 import SearchIcon from '../Icons/SearchIcon';
 import SingleTaskRow from './SingleTaskRow';
 
-const TaskListTable = ({ tasks, onTaskEdit, searchMessage }) => {
+const TaskListTable = ({ tasks, onTaskEdit }) => {
+  let searchMessage = tasks.length > 0 ? '' : 'No Data Available';
   return (
     <div className="overflow-auto">
       {tasks.length === 0 && (

@@ -4,19 +4,19 @@ import Favourite from '../Icons/Favourite';
 import NotFavourite from '../Icons/NotFavourite';
 import AlertConfirmModal from '../Modal/AlertConfirmModal';
 import {
-  useModal,
-  useTasksDispatch,
-} from '../contextApi/useContexts';
+  useModalContext,
+  useTasksContext,
+} from '../contextApi/contextHooks';
 
 const SingleTaskRow = ({ taskItem, onTaskEdit }) => {
-  const { modalContent, openModal, closeModal } = useModal();
+  const { isModalOpen, openModal, closeModal } = useModalContext();
 
-  const dispatch = useTasksDispatch();
+  const { dispatch } = useTasksContext();
 
   const tagColors = ['#00D991A1', '#1C92FFB0', '#FE1A1AB5'];
 
   const handleDeleteTask = () => {
-    openModal('delete');
+    openModal('deleteModal');
 
     // dispatch({ type: 'deleteTask', payload: taskId });
   };
@@ -75,7 +75,7 @@ const SingleTaskRow = ({ taskItem, onTaskEdit }) => {
               Edit
             </button>
             {/* Delete Confirmation Modal */}
-            {modalContent && modalContent === 'delete' && (
+            {isModalOpen && isModalOpen === 'deleteModal' && (
               <>
                 <AlertConfirmModal
                   title="Confirm Delete"

@@ -1,19 +1,21 @@
 import { useState } from 'react';
 import CloseSvg from '../../assets/red-x-line-icon.svg';
+import { useModalContext } from '../contextApi/contextHooks';
 const AddTaskModal = ({
-  onCloseModal,
   error,
   onValidate,
   onSaveTask,
   initialSelectedTask,
 }) => {
   const initialData = {
+    id: crypto.randomUUID().toString(),
     title: '',
     description: '',
     tags: [],
     isFavorite: false,
     priority: '',
   };
+  const { closeModal } = useModalContext();
 
   const [taskData, setTaskData] = useState(
     initialSelectedTask || initialData
@@ -72,12 +74,14 @@ const AddTaskModal = ({
       <div
         className="bg-black backdrop-blur-sm bg-opacity-70 h-full w-full z-10 fixed top-0 left-0"
         onClick={() => {
-          onCloseModal();
+          closeModal();
         }}></div>
       <form className="mx-auto my-10 w-full max-w-[740px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11 fixed m-auto top-[45%] left-1/2 right-1/2 -translate-x-1/2 -translate-y-1/2 z-50">
         <div
           className="absolute top-4 right-3 rounded-full w-8 h-8 cursor-pointer"
-          onClick={() => onCloseModal()}>
+          onClick={() => {
+            closeModal();
+          }}>
           <img src={CloseSvg} alt="" />
         </div>
         <h2 className="mb-9 text-center text-2xl font-bold text-white lg:mb-11 lg:text-[28px]">

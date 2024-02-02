@@ -1,23 +1,22 @@
 import { toast } from 'react-toastify';
 import ActionButton from '../Buttons/ActionButton';
 import AlertConfirmModal from '../Modal/AlertConfirmModal';
+
 import {
-  useModal,
-  useTasks,
-  useTasksDispatch,
-} from '../contextApi/useContexts';
+  useModalContext,
+  useTasksContext,
+} from '../contextApi/contextHooks';
 import SearchBar from './SearchBar';
 
-const ActionBar = ({ onOpenModal }) => {
-  const { tasks } = useTasks();
-  const dispatch = useTasksDispatch();
-  const { modalContent, openModal, closeModal } = useModal();
+const ActionBar = () => {
+  const { tasks, dispatch } = useTasksContext();
+  const { isModalOpen, openModal, closeModal } = useModalContext();
 
   const handleDeleteAll = () => {
     if (tasks.length < 1) {
       return;
     }
-    openModal('deleteAll');
+    openModal('deleteAllModal');
   };
   const handleConfirmDeleteAll = () => {
     dispatch({
@@ -38,16 +37,16 @@ const ActionBar = ({ onOpenModal }) => {
       <div className="flex items-center space-x-5">
         <SearchBar />
         <ActionButton
-          onOpenModal={onOpenModal}
           color="blue"
           text="Add Task"
+          onOpenModal={() => openModal('addTaskModal')}
         />
         <ActionButton
           onOpenModal={handleDeleteAll}
           color="red"
           text={`Delete All`}
         />
-        {modalContent && modalContent === 'deleteAll' && (
+        {isModalOpen && isModalOpen === 'deleteAllModal' && (
           <AlertConfirmModal
             title="Confirm Delete All"
             content={`Are you sure you want to delete all tasks?`}

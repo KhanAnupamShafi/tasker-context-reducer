@@ -2,14 +2,15 @@ import { useState } from 'react';
 import { validateField } from '../../validate/validateField';
 import AddTaskModal from '../Modal/AddTaskModal';
 import {
-  useTasks,
-  useTasksDispatch,
-} from '../contextApi/useContexts';
+  useModalContext,
+  useTasksContext,
+} from '../contextApi/contextHooks';
 import ActionBar from './ActionBar';
 import TaskListTable from './TaskListTable';
 
 const TaskBoard = () => {
-  const [openModal, setOpenModal] = useState(false);
+  const { tasks, dispatch } = useTasksContext();
+  const { openModal, closeModal, isModalOpen } = useModalContext();
   const [selectedTask, setSelectedTask] = useState(null);
 
   const [error, setError] = useState({
@@ -18,8 +19,6 @@ const TaskBoard = () => {
     tags: '',
     priority: '',
   });
-  const { data, tasks } = useTasks();
-  const dispatch = useTasksDispatch();
 
   const handleSaveTask = (newTask, isAdd) => {
     if (isAdd) {
@@ -39,25 +38,19 @@ const TaskBoard = () => {
   };
 
   const handleCloseModal = () => {
-    setOpenModal(false);
+    closeModal();
     setSelectedTask(null);
   };
   const handleEditTask = (task) => {
-    setOpenModal(true);
+    openModal();
     setSelectedTask(task);
   };
 
-  const noResultsMessage =
-    data.length === 0 && tasks.length < 1
-      ? 'Tasks List Is Empty'
-      : 'No Tasks Found';
-
   return (
     <section className="mb-20" id="tasks">
-      {openModal && (
+      {isModalOpen && isModalOpen === 'addTaskModal' && (
         <AddTaskModal
           error={error}
-          onCloseModal={handleCloseModal}
           onSaveTask={handleSaveTask}
           onValidate={handleValidate}
           initialSelectedTask={selectedTask}
@@ -65,13 +58,9 @@ const TaskBoard = () => {
       )}
       <div className="container">
         <div className="rounded-xl border border-[rgba(206,206,206,0.12)] bg-[#1D212B] px-6 py-8 md:px-9 md:py-16">
-          <ActionBar onOpenModal={() => setOpenModal(true)} />
+          <ActionBar />
 
-          <TaskListTable
-            tasks={data}
-            onTaskEdit={handleEditTask}
-            searchMessage={noResultsMessage}
-          />
+          <TaskListTable tasks={tasks} onTaskEdit={handleEditTask} />
         </div>
       </div>
     </section>
